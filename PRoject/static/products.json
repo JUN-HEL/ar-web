@@ -1,0 +1,16 @@
+{
+    "products": [
+        {
+            "title": "Acer Aspire 3 Laptop",
+            "price": "₹45,990",
+            "link": "https://www.flipkart.com/acer-aspire-3-laptop/p/itmf9s97rrzfgbyu",
+            "image_url": "https://example.com/acer-laptop.jpg"
+        },
+        {
+            "title": "Dell Inspiron 15 Laptop",
+            "price": "₹50,990",
+            "link": "https://www.flipkart.com/dell-inspiron-15-laptop/p/itmf9s97rrzfgbyv",
+            "image_url": "https://example.com/dell-laptop.jpg"
+        }
+    ]
+}

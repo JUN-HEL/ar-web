@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR.js with Object Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-ar@1.7.2.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+        <!-- Placeholder for AR content -->
+        <a-entity id="ar-content" position="0 0 0">
+            <a-box id="detected-box" color="red" visible="false"></a-box>
+        </a-entity>
+
+        <!-- AR.js camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // Load Object Detection Model
+        let model;
+        cocoSsd.load().then(loadedModel => {
+            model = loadedModel;
+            console.log("Model loaded!");
+        });
+
+        // Access AR.js camera feed
+        const video = document.querySelector('video');
+        const box = document.querySelector('#detected-box');
+
+        // Run object detection on each video frame
+        async function detectObjects() {
+            if (model && video.readyState === 4) {
+                const predictions = await model.detect(video);
+
+                // Display AR overlays for detected objects
+                predictions.forEach(prediction => {
+                    if (prediction.class === "person" && prediction.score > 0.6) {
+                        // Use bounding box to position AR content
+                        const bbox = prediction.bbox; // [x, y, width, height]
+                        const x = (bbox[0] / video.videoWidth) - 0.5;
+                        const y = -(bbox[1] / video.videoHeight) + 0.5;
+
+                        // Update box position and visibility
+                        box.setAttribute("position", `${x} ${y} -2`);
+                        box.setAttribute("visible", true);
+                    }
+                });
+            }
+            requestAnimationFrame(detectObjects);
+        }
+
+        // Start detection loop once the video feed is ready
+        video.addEventListener('loadeddata', () => {
+            console.log("Video feed ready!");
+            detectObjects();
+        });
+    </script>
+</body>
+
+</html>

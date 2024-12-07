@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Product Display</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.min.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+        <!-- Define the marker -->
+        <a-marker preset="hiro">
+            <!-- Create a 3D object or entity to display data on marker detection -->
+            <a-entity id="product-info" position="0 0 0" text="value: Loading...; color: black;"
+                scale="4 4 4"></a-entity>
+        </a-marker>
+
+        <!-- Camera for AR -->
+        <a-camera></a-camera>
+    </a-scene>
+
+    <script>
+        // Load product data from the JSON file
+        fetch('static/products.json')
+            .then(response => response.json())
+            .then(data => {
+                const product = data.products[0]; // Example: taking the first product
+
+                // Set the text value of the entity on the AR marker
+                const productInfo = document.getElementById('product-info');
+                productInfo.setAttribute('text', `value: ${product.title}\nPrice: ₹${product.price}\nLink: ${product.link}; color: black;`);
+
+                console.log('Product Data Loaded:', product);
+            })
+            .catch(error => {
+                console.error('Error loading product data:', error);
+            });
+    </script>
+</body>
+
+</html>
